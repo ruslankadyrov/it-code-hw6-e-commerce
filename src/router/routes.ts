@@ -4,8 +4,9 @@ import ListView from "@/pages/ListView.vue";
 import ProductView from "@/pages/ProductView.vue";
 
 const routes: readonly RouteRecordRaw[] = [
-  { path: "/", component: ListView },
-  { path: "/product", component: ProductView },
+  // component: () => import ("@/pages/ListView.vue")
+  { name: "List", path: "/", component: ListView },
+  { name: "Product", path: "/product", component: ProductView },
 ];
 
 export default routes;

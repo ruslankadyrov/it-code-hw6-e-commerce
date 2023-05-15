@@ -6,9 +6,9 @@
       <el-link type="primary" @click="$router.push({ name: 'List' })"
         >Главная</el-link
       >
-      <el-link type="success" @click="$router.push({ name: 'Product' })"
+      <!-- <el-link type="success" @click="$router.push({ name: 'Product' })"
         >Товар</el-link
-      >
+      > -->
     </div>
     <div class="app__main">
       <router-view></router-view>

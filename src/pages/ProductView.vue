@@ -1,7 +1,10 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h1>222</h1>
+  <h3>Товар №</h3>
+  <el-button type="primary" plain @click="$router.push({ name: 'List' })"
+    >Назад</el-button
+  >
 </template>
 
 <style scoped lang="scss"></style>

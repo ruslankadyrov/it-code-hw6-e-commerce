@@ -17,8 +17,21 @@
 </template>
 
 <style scoped lang="scss">
+.header {
+  background-color: #d9ecff;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  width: 100%;
+  padding: 16px;
+  border-bottom: 2px solid #409eff;
+}
+
+.app__main {
+  margin-top: 60px;
+}
 .el-link {
-  font-size: 16px;
-  margin-right: 8px;
+  font-size: 20px;
+  margin-right: 20px;
 }
 </style>

@@ -1,7 +1,30 @@
 <script setup lang="ts"></script>
 
 <template>
-  <h1>111</h1>
+  <h3>Список товаров</h3>
+  <el-scrollbar>
+    <p
+      v-for="item in 20"
+      :key="item"
+      class="scrollbar-demo-item"
+      @click="$router.push({ name: 'Product' })"
+    >
+      Товар №{{ item }}
+    </p>
+  </el-scrollbar>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.scrollbar-demo-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 4px;
+  background: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
+}
+</style>

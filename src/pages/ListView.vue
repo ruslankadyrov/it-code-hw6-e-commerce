@@ -7,7 +7,7 @@
       v-for="item in 20"
       :key="item"
       class="scrollbar-demo-item"
-      @click="$router.push({ name: 'Product' })"
+      @click="$router.push('/product/' + item)"
     >
       Товар №{{ item }}
     </p>

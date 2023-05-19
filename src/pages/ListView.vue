@@ -6,12 +6,14 @@ import type { Product } from "../types/products";
 
 import makeRequest from "../utils/makeRequest";
 
+import { ArrowDown } from "@element-plus/icons-vue";
+
 const products = ref<Product[]>([]);
 const productSymbol = ref("");
 
 makeRequest({
   method: "get",
-  url: "https://financialmodelingprep.com/api/v3/profile/AAPL,NVDA,YNDX,MSFT,BA,KO,IBM,V,AXP,F,INTC,EBAY,DELL,AMZN,?apikey=39c41689f9fab5f0dcf71b542172366c00",
+  url: "https://financialmodelingprep.com/api/v3/profile/AAPL,NVDA,YNDX,MSFT,BA,KO,IBM,V,AXP,F,INTC,EBAY,DELL,AMZN?apikey=39c41689f9fab5f0dcf71b542172366c",
 }).then(({ data }) => {
   products.value = data;
 });
@@ -21,7 +23,17 @@ const symbolDebounce = useDebounce(productSymbol, 2000);
 function makeClickRequest() {
   makeRequest({
     method: "get",
-    url: `https://financialmodelingprep.com/api/v3/profile/${symbolDebounce.value}?apikey=39c41689f9fab5f0dcf71b542172366c`,
+    url: `https://financialmodelingprep.com/api/v3/profile/${symbolDebounce.value}?apikey=39c41689f9fab5f0dcf71b542172366c00`,
+  }).then(({ data }) => {
+    products.value = data;
+  });
+  console.log(1111);
+}
+
+function makeFilterRequest(symbol: string) {
+  makeRequest({
+    method: "get",
+    url: `https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=39c41689f9fab5f0dcf71b542172366c00`,
   }).then(({ data }) => {
     products.value = data;
   });
@@ -30,7 +42,7 @@ function makeClickRequest() {
 //for infinite scroll
 const count = ref(0);
 const load = () => {
-  count.value += 5;
+  count.value += 5; // можно заменить функцией запроса (если бы в апишке был параметр _limit, но в этой его нет ): )
 };
 </script>
 
@@ -39,6 +51,23 @@ const load = () => {
   <el-button type="primary" plain @click="makeClickRequest()">
     Search
   </el-button>
+
+  <el-dropdown>
+    <span class="el-dropdown-link">
+      Filter
+      <el-icon class="el-icon--right">
+        <arrow-down />
+      </el-icon>
+    </span>
+    <template #dropdown>
+      <el-dropdown-menu v-for="product in products">
+        <el-dropdown-item @click="makeFilterRequest(product.symbol)">
+          {{ product.symbol }}
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </template>
+  </el-dropdown>
+
   <h3>List of stocks</h3>
 
   <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
@@ -57,7 +86,7 @@ const load = () => {
     </li>
   </ul>
 
-  <!-- <el-scrollbar v-for="list in 20">
+  <!-- <el-scrollbar>
     <p
       v-for="product in products"
       class="scrollbar-demo-item"
@@ -70,18 +99,18 @@ const load = () => {
 </template>
 
 <style scoped lang="scss">
-// .scrollbar-demo-item {
-//   cursor: pointer;
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-//   height: 50px;
-//   margin: 10px;
-//   text-align: center;
-//   border-radius: 4px;
-//   background: var(--el-color-primary-light-9);
-//   color: var(--el-color-primary);
-// }
+.scrollbar-demo-item {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  margin: 10px;
+  text-align: center;
+  border-radius: 4px;
+  background: var(--el-color-primary-light-9);
+  color: var(--el-color-primary);
+}
 
 .infinite-list {
   height: 90vh;
@@ -102,5 +131,12 @@ const load = () => {
 
 .infinite-list .infinite-list-item + .list-item {
   margin-top: 10px;
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: var(--el-color-primary);
+  display: flex;
+  align-items: center;
 }
 </style>

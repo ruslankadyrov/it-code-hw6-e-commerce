@@ -18,11 +18,7 @@ function makeClickRequest(id: Ref<any>) {
   }).then(({ data }) => {
     products.value = data;
   });
-
-  console.log(paramsId + "ee111");
 }
-
-console.log(paramsId + "ee");
 
 // makeRequest({
 //   method: "get",
@@ -34,15 +30,17 @@ console.log(paramsId + "ee");
 
 <template>
   <h3>{{ (paramsId = $route.params.id) }}</h3>
-  <button @click="makeClickRequest(paramsId)">Load real data</button>
+  <el-button type="primary" plain @click="makeClickRequest(paramsId)">
+    Load real data
+  </el-button>
   <div v-for="product in products">
     <span>{{ product.companyName }}</span>
     <sup>{{ product.price }}$</sup>
-    <div>Описание:{{ product.description }}</div>
+    <div>Description:{{ product.description }}</div>
   </div>
-  <el-button type="primary" plain @click="$router.push({ name: 'List' })"
-    >Назад</el-button
-  >
+  <el-button type="primary" plain @click="$router.push({ name: 'List' })">
+    Back
+  </el-button>
 
   <!-- <h3>{{ (paramsId = $route.params.id) }}</h3>
   <div v-for="product in products">

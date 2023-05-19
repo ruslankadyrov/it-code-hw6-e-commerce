@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
 import { useDebounce } from "@vueuse/core";
 
 import type { Product } from "../types/products";
@@ -7,6 +7,7 @@ import type { Product } from "../types/products";
 import makeRequest from "../utils/makeRequest";
 
 const products = ref<Product[]>([]);
+const product_symbol = ref("");
 
 makeRequest({
   method: "get",
@@ -15,17 +16,12 @@ makeRequest({
   products.value = data;
 });
 
-// const watch (form, ()=>{
-//   console.log('send api requst');
-// });
-
-// const debounced = useDebounce(() => {
-//       console.log('Debounce button clicked!')
-//     }, 2000)
-//   };
+const gg = useDebounce(product_symbol, 2000);
 </script>
 
 <template>
+  <input type="text" id="product_symbol" v-model="product_symbol" />
+  {{ product_symbol }}
   <h3>Список товаров</h3>
   <el-scrollbar v-for="product in products">
     <p

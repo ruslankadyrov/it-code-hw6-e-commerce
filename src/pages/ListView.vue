@@ -1,43 +1,101 @@
 <script setup lang="ts">
-import type { Object } from "@/types/products";
+import { ref } from "vue";
+import { useDebounce, useDebounceFn } from "@vueuse/core";
 
-const products: Object[] = [
-  {
-    id: 1,
-    title: "Rustic Concrete Chips",
-    price: 466,
-    description:
-      "The beautiful range of Apple Naturalé that has an exciting mix of natural ingredients. With the Goodness of 100% Natural Ingredients",
-    images: [
-      "https://picsum.photos/640/640?r=1142",
-      "https://picsum.photos/640/640?r=9558",
-      "https://picsum.photos/640/640?r=1943",
-    ],
-    creationAt: "2023-05-15T05:15:06.000Z",
-    updatedAt: "2023-05-15T05:15:06.000Z",
-    category: {
-      id: 4,
-      name: "Shoes",
-      image: "https://picsum.photos/640/640?r=3235",
-      creationAt: "2023-05-15T05:15:06.000Z",
-      updatedAt: "2023-05-15T05:15:06.000Z",
-    },
-  },
-];
+import type { Product } from "../types/products";
+
+import makeRequest from "../utils/makeRequest";
+
+import { ArrowDown } from "@element-plus/icons-vue";
+
+const products = ref<Product[]>([]);
+const productSymbol = ref("");
+
+makeRequest({
+  method: "get",
+  url: "https://financialmodelingprep.com/api/v3/profile/AAPL,NVDA,YNDX,MSFT,BA,KO,IBM,V,AXP,F,INTC,EBAY,DELL,AMZN?apikey=39c41689f9fab5f0dcf71b542172366c",
+}).then(({ data }) => {
+  products.value = data;
+});
+
+const symbolDebounce = useDebounce(productSymbol, 2000);
+
+function makeClickRequest() {
+  makeRequest({
+    method: "get",
+    url: `https://financialmodelingprep.com/api/v3/profile/${symbolDebounce.value}?apikey=39c41689f9fab5f0dcf71b542172366c00`,
+  }).then(({ data }) => {
+    products.value = data;
+  });
+  console.log(1111);
+}
+
+function makeFilterRequest(symbol: string) {
+  makeRequest({
+    method: "get",
+    url: `https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=39c41689f9fab5f0dcf71b542172366c00`,
+  }).then(({ data }) => {
+    products.value = data;
+  });
+}
+
+//for infinite scroll
+const count = ref(0);
+const load = () => {
+  count.value += 5; // можно заменить функцией запроса (если бы в апишке был параметр _limit, но в этой его нет ): )
+};
 </script>
 
 <template>
-  <h3>Список товаров</h3>
-  <el-scrollbar>
-    <p
-      v-for="item in 20"
-      :key="item"
-      class="scrollbar-demo-item"
-      @click="$router.push('/product/' + item)"
+  <input type="text" id="product_symbol" v-model="productSymbol" />
+  <el-button type="primary" plain @click="makeClickRequest()">
+    Search
+  </el-button>
+
+  <el-dropdown>
+    <span class="el-dropdown-link">
+      Filter
+      <el-icon class="el-icon--right">
+        <arrow-down />
+      </el-icon>
+    </span>
+    <template #dropdown>
+      <el-dropdown-menu v-for="product in products">
+        <el-dropdown-item @click="makeFilterRequest(product.symbol)">
+          {{ product.symbol }}
+        </el-dropdown-item>
+      </el-dropdown-menu>
+    </template>
+  </el-dropdown>
+
+  <h3>List of stocks</h3>
+
+  <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
+    <li
+      v-for="i in count"
+      :key="i"
+      class="infinite-list-item"
+      @click="$router.push('/product/' + products[i].symbol)"
     >
-      Товар №{{ item }} {{ products[0].title }}
+      <el-image
+        style="width: 40px; height: 40px"
+        :src="products[i].image"
+        lazy
+      />
+      {{ products[i].companyName }}
+    </li>
+  </ul>
+
+  <!-- <el-scrollbar>
+    <p
+      v-for="product in products"
+      class="scrollbar-demo-item"
+      @click="$router.push('/product/' + product.symbol)"
+    >
+      <el-image style="width: 40px; height: 40px" :src="product.image" lazy />
+      {{ product.companyName }}
     </p>
-  </el-scrollbar>
+  </el-scrollbar> -->
 </template>
 
 <style scoped lang="scss">
@@ -52,5 +110,33 @@ const products: Object[] = [
   border-radius: 4px;
   background: var(--el-color-primary-light-9);
   color: var(--el-color-primary);
+}
+
+.infinite-list {
+  height: 90vh;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  .infinite-list-item {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60px;
+    background: var(--el-color-primary-light-9);
+    margin: 10px;
+    color: var(--el-color-primary);
+  }
+}
+
+.infinite-list .infinite-list-item + .list-item {
+  margin-top: 10px;
+}
+
+.el-dropdown-link {
+  cursor: pointer;
+  color: var(--el-color-primary);
+  display: flex;
+  align-items: center;
 }
 </style>

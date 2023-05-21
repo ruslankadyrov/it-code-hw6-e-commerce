@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 import type { Product } from "../types/products";
 
-import makeRequest from "../utils/makeRequest";
+import makeRequest from "../services/api/httpClient";
 import type { Ref } from "vue";
 
 const products = ref<Product[]>([]);

@@ -4,19 +4,23 @@ import { useDebounce, useDebounceFn } from "@vueuse/core";
 
 import type { Product } from "../types/products";
 
-import makeRequest from "../utils/makeRequest";
+import makeRequest from "../services/api/httpClient";
 
 import { ArrowDown } from "@element-plus/icons-vue";
+import { useProductStore } from "@/store/product-store";
 
 const products = ref<Product[]>([]);
 const productSymbol = ref("");
 
-makeRequest({
-  method: "get",
-  url: "https://financialmodelingprep.com/api/v3/profile/AAPL,NVDA,YNDX,MSFT,BA,KO,IBM,V,AXP,F,INTC,EBAY,DELL,AMZN?apikey=39c41689f9fab5f0dcf71b542172366c",
-}).then(({ data }) => {
-  products.value = data;
-});
+const productStore = useProductStore();
+productStore.fetchProducts();
+
+// makeRequest({
+//   method: "get",
+//   url: "https://financialmodelingprep.com/api/v3/profile/AAPL,NVDA,YNDX,MSFT,BA,KO,IBM,V,AXP,F,INTC,EBAY,DELL,AMZN?apikey=39c41689f9fab5f0dcf71b542172366c",
+// }).then(({ data }) => {
+//   products.value = data;
+// });
 
 const symbolDebounce = useDebounce(productSymbol, 2000);
 
@@ -75,14 +79,14 @@ const load = () => {
       v-for="i in count"
       :key="i"
       class="infinite-list-item"
-      @click="$router.push('/product/' + products[i].symbol)"
+      @click="$router.push('/product/' + productStore.products[i].symbol)"
     >
       <el-image
         style="width: 40px; height: 40px"
-        :src="products[i].image"
+        :src="productStore.products[i].image"
         lazy
       />
-      {{ products[i].companyName }}
+      {{ productStore.products[i].companyName }}
     </li>
   </ul>
 

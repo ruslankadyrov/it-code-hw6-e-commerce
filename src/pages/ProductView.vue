@@ -10,14 +10,12 @@ import { useRoute } from "vue-router";
 
 const products = ref<Product[]>([]);
 
-let paramsId = ref<any>();
-
 const route = useRoute();
-const paramsId2 = route.params.id;
+const paramsId = route.params.id;
 
 makeRequest({
   method: "get",
-  url: `https://financialmodelingprep.com/api/v3/profile/${paramsId2}?apikey=39c41689f9fab5f0dcf71b542172366c`,
+  url: `https://financialmodelingprep.com/api/v3/profile/${paramsId}?apikey=39c41689f9fab5f0dcf71b542172366c`,
 }).then(({ data }) => {
   products.value = data;
 });

@@ -14,8 +14,6 @@ const productSymbol = ref("");
 const productStore = useProductStore();
 productStore.fetchProducts();
 
-const productFilter = productStore;
-
 let makeSearch = ref("false");
 
 const valueFilter = ref("");
@@ -43,15 +41,7 @@ function resetFilter() {
   makeSearch.value = "false";
   productSymbol.value = "";
   products.value = [];
-}
-
-function makeFilterRequest(symbol: string) {
-  makeRequest({
-    method: "get",
-    url: `https://financialmodelingprep.com/api/v3/profile/${symbol}?apikey=39c41689f9fab5f0dcf71b542172366c00`,
-  }).then(({ data }) => {
-    products.value = data;
-  });
+  valueFilter.value = "";
 }
 
 //for infinite scroll
@@ -64,22 +54,37 @@ const options = [
   {
     value: "RU",
     label: "Russia",
+    filtered: function () {
+      makeSearch.value = "filter";
+    },
   },
   {
     value: "US",
     label: "United States",
+    filtered: function () {
+      makeSearch.value = "filter";
+    },
   },
   {
-    value: "Option3",
-    label: "Option3",
+    value: "AU",
+    label: "Australia",
+    filtered: function () {
+      makeSearch.value = "filter";
+    },
   },
   {
-    value: "Option4",
-    label: "Option4",
+    value: "CA",
+    label: "Canada",
+    filtered: function () {
+      makeSearch.value = "filter";
+    },
   },
   {
-    value: "Option5",
-    label: "Option5",
+    value: "NZ",
+    label: "New Zealand",
+    filtered: function () {
+      makeSearch.value = "filter";
+    },
   },
 ];
 </script>
@@ -99,6 +104,7 @@ const options = [
       :key="item.value"
       :label="item.label"
       :value="item.value"
+      @click="item.filtered"
     />
   </el-select>
 
@@ -111,6 +117,7 @@ const options = [
         <el-image
           style="width: 40px; height: 40px"
           :src="productStore.products[i - 1].image"
+          class="product-image"
         />
         {{ productStore.products[i - 1].symbol }}
         {{ i }}
@@ -118,7 +125,7 @@ const options = [
     </ul>
   </div>
 
-  <div v-else="makeSearch == 'true'">
+  <div v-else-if="makeSearch == 'true'">
     <el-scrollbar>
       <p
         v-for="product in products"
@@ -130,15 +137,34 @@ const options = [
       </p>
     </el-scrollbar>
   </div>
-  <div v-for="product in productStore.products">
-    <div v-if="product.country == valueFilter">
-      {{ product.companyName }}
-      {{ product.symbol }}
+
+  <div v-else="makeSearch == 'filter'">
+    <div v-for="product in productStore.products">
+      <div v-if="product.country == valueFilter">
+        <el-scrollbar>
+          <p
+            class="scrollbar-demo-item"
+            @click="$router.push('/product/' + product.symbol)"
+          >
+            <el-image
+              style="width: 40px; height: 40px"
+              :src="product.image"
+              lazy
+            />
+            {{ product.companyName }}
+          </p>
+        </el-scrollbar>
+      </div>
     </div>
   </div>
+  {{ makeSearch }}
 </template>
 
 <style scoped lang="scss">
+.product-image {
+  filter: drop-shadow(1px 1px 1px black);
+  border-radius: 15px;
+}
 .infinite-list {
   height: 30vh;
   padding: 0;
@@ -164,7 +190,7 @@ const options = [
   align-items: center;
   justify-content: center;
   height: 50px;
-  margin: 10px;
+  margin: 5px;
   text-align: center;
   border-radius: 4px;
   background: var(--el-color-primary-light-9);

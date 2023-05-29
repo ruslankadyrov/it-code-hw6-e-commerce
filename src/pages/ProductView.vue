@@ -1,38 +1,30 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 import type { Product } from "../types/products";
 
 import makeRequest from "../services/api/httpClient";
 import type { Ref } from "vue";
 
+import { useRoute } from "vue-router";
+
 const products = ref<Product[]>([]);
 
 let paramsId = ref<any>();
 
-function makeClickRequest(id: Ref<any>) {
-  paramsId = id;
-  makeRequest({
-    method: "get",
-    url: `https://financialmodelingprep.com/api/v3/profile/${paramsId}?apikey=39c41689f9fab5f0dcf71b542172366c`,
-  }).then(({ data }) => {
-    products.value = data;
-  });
-}
+const route = useRoute();
+const paramsId2 = route.params.id;
 
-// makeRequest({
-//   method: "get",
-//   url: "https://financialmodelingprep.com/api/v3/profile/AAPL,NVDA?apikey=39c41689f9fab5f0dcf71b542172366c00",
-// }).then(({ data }) => {
-//   products.value = data;
-// });
+makeRequest({
+  method: "get",
+  url: `https://financialmodelingprep.com/api/v3/profile/${paramsId2}?apikey=39c41689f9fab5f0dcf71b542172366c`,
+}).then(({ data }) => {
+  products.value = data;
+});
 </script>
 
 <template>
   <h3>{{ (paramsId = $route.params.id) }}</h3>
-  <el-button type="primary" plain @click="makeClickRequest(paramsId)">
-    Load real data
-  </el-button>
   <div v-for="product in products">
     <span>{{ product.companyName }}</span>
     <sup>{{ product.price }}$</sup>

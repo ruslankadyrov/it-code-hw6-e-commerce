@@ -14,7 +14,11 @@ const productSymbol = ref("");
 const productStore = useProductStore();
 productStore.fetchProducts();
 
+const productFilter = productStore;
+
 let makeSearch = ref("false");
+
+const valueFilter = ref("");
 
 // makeRequest({
 //   method: "get",
@@ -38,6 +42,7 @@ function makeClickRequest() {
 function resetFilter() {
   makeSearch.value = "false";
   productSymbol.value = "";
+  products.value = [];
 }
 
 function makeFilterRequest(symbol: string) {
@@ -54,6 +59,29 @@ const count = ref(0);
 const load = () => {
   count.value += 3;
 };
+
+const options = [
+  {
+    value: "RU",
+    label: "Russia",
+  },
+  {
+    value: "US",
+    label: "United States",
+  },
+  {
+    value: "Option3",
+    label: "Option3",
+  },
+  {
+    value: "Option4",
+    label: "Option4",
+  },
+  {
+    value: "Option5",
+    label: "Option5",
+  },
+];
 </script>
 
 <template>
@@ -64,6 +92,17 @@ const load = () => {
   <el-button type="primary" plain @click="resetFilter()">
     Reset filter
   </el-button>
+
+  <el-select v-model="valueFilter" class="m-2" placeholder="Choose country">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value"
+    />
+  </el-select>
+
+  {{ valueFilter }}
 
   <h3>List of stocks</h3>
   <div v-if="makeSearch == 'false'">
@@ -90,6 +129,12 @@ const load = () => {
         {{ product.companyName }}
       </p>
     </el-scrollbar>
+  </div>
+  <div v-for="product in productStore.products">
+    <div v-if="product.country == valueFilter">
+      {{ product.companyName }}
+      {{ product.symbol }}
+    </div>
   </div>
 </template>
 

@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref } from "vue";
 
 import type { Product } from "../types/products";
 
 import makeRequest from "../services/api/httpClient";
-import type { Ref } from "vue";
 
 import { useRoute } from "vue-router";
 

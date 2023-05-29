@@ -1,12 +1,11 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useDebounce, useDebounceFn } from "@vueuse/core";
+import { useDebounce } from "@vueuse/core";
 
 import type { Product } from "../types/products";
 
 import makeRequest from "../services/api/httpClient";
 
-import { ArrowDown } from "@element-plus/icons-vue";
 import { useProductStore } from "@/store/product-store";
 
 const products = ref<Product[]>([]);
@@ -31,7 +30,6 @@ function makeClickRequest() {
   }).then(({ data }) => {
     products.value = data;
   });
-  console.log(1111);
 }
 
 function makeFilterRequest(symbol: string) {
@@ -46,7 +44,7 @@ function makeFilterRequest(symbol: string) {
 //for infinite scroll
 const count = ref(0);
 const load = () => {
-  count.value += 5; // можно заменить функцией запроса (если бы в апишке был параметр _limit, но в этой его нет ): )
+  count.value += 3;
 };
 </script>
 
@@ -56,91 +54,36 @@ const load = () => {
     Search
   </el-button>
 
-  <el-dropdown>
-    <span class="el-dropdown-link">
-      Filter
-      <el-icon class="el-icon--right">
-        <arrow-down />
-      </el-icon>
-    </span>
-    <template #dropdown>
-      <el-dropdown-menu v-for="product in products">
-        <el-dropdown-item @click="makeFilterRequest(product.symbol)">
-          {{ product.symbol }}
-        </el-dropdown-item>
-      </el-dropdown-menu>
-    </template>
-  </el-dropdown>
-
   <h3>List of stocks</h3>
-
   <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
-    <li
-      v-for="i in count"
-      :key="i"
-      class="infinite-list-item"
-      @click="$router.push('/product/' + productStore.products[i].symbol)"
-    >
+    <li v-for="i in count" :key="i" class="infinite-list-item">
       <el-image
         style="width: 40px; height: 40px"
-        :src="productStore.products[i].image"
-        lazy
+        :src="productStore.products[i - 1].image"
       />
-      {{ productStore.products[i].companyName }}
+      {{ productStore.products[i - 1].symbol }}
+      {{ i }}
     </li>
   </ul>
-
-  <!-- <el-scrollbar>
-    <p
-      v-for="product in products"
-      class="scrollbar-demo-item"
-      @click="$router.push('/product/' + product.symbol)"
-    >
-      <el-image style="width: 40px; height: 40px" :src="product.image" lazy />
-      {{ product.companyName }}
-    </p>
-  </el-scrollbar> -->
 </template>
 
 <style scoped lang="scss">
-.scrollbar-demo-item {
-  cursor: pointer;
+.infinite-list {
+  height: 30vh;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.infinite-list .infinite-list-item {
   display: flex;
   align-items: center;
   justify-content: center;
   height: 50px;
-  margin: 10px;
-  text-align: center;
-  border-radius: 4px;
   background: var(--el-color-primary-light-9);
+  margin: 10px;
   color: var(--el-color-primary);
 }
-
-.infinite-list {
-  height: 90vh;
-  padding: 0;
-  margin: 0;
-  list-style: none;
-  .infinite-list-item {
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 60px;
-    background: var(--el-color-primary-light-9);
-    margin: 10px;
-    color: var(--el-color-primary);
-  }
-}
-
 .infinite-list .infinite-list-item + .list-item {
   margin-top: 10px;
-}
-
-.el-dropdown-link {
-  cursor: pointer;
-  color: var(--el-color-primary);
-  display: flex;
-  align-items: center;
 }
 </style>

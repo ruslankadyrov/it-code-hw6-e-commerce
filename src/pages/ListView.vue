@@ -111,29 +111,31 @@ function makeSearchFn() {
 
 <template>
   <!-- v-on:keyup.enter="makeClickRequest()" -->
-  <input
-    type="text"
-    id="product_symbol"
-    v-model="productSymbol"
-    @input="makeSearchFn()"
-  />
-  <el-button type="primary" plain @click="resetSearch()">
-    Reset search
-  </el-button>
-  <el-select v-model="valueFilter" class="m-2" placeholder="Choose country">
-    <el-option
-      v-for="item in filterItem"
-      :key="item.value"
-      :label="item.label"
-      :value="item.value"
-      @click="item.filtered"
+  <div class="productFilter">
+    <input
+      type="text"
+      id="product_symbol"
+      v-model="productSymbol"
+      @input="makeSearchFn()"
     />
-  </el-select>
-  <el-button type="primary" plain @click="resetFilter()">
-    Reset filter
-  </el-button>
+    <el-button type="primary" plain @click="resetSearch()">
+      Reset search
+    </el-button>
+    <el-select v-model="valueFilter" class="m-2" placeholder="Choose country">
+      <el-option
+        v-for="item in filterItem"
+        :key="item.value"
+        :label="item.label"
+        :value="item.value"
+        @click="item.filtered"
+      />
+    </el-select>
+    <el-button type="primary" plain @click="resetFilter()">
+      Reset filter
+    </el-button>
+  </div>
 
-  <h3>List of stocks</h3>
+  <!-- <h2>List of shares</h2> -->
   <div v-if="makeSearch == 'false' && makeFilter == 'false'">
     <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
       <li
@@ -176,7 +178,7 @@ function makeSearchFn() {
         />
         {{ product.companyName }}
         {{ product.symbol }}
-        {{ product.price }}
+        {{ product.price }}$
         <div
           :class="{
             red: product.changes <= 0,
@@ -204,7 +206,7 @@ function makeSearchFn() {
             />
             {{ product.companyName }}
             {{ product.symbol }}
-            {{ product.price }}
+            {{ product.price }}$
             <div
               :class="{
                 red: product.changes <= 0,
@@ -234,7 +236,7 @@ function makeSearchFn() {
             />
             {{ product.companyName }}
             {{ product.symbol }}
-            {{ product.price }}
+            {{ product.price }}$
             <div
               :class="{
                 red: product.changes <= 0,
@@ -253,6 +255,23 @@ function makeSearchFn() {
 </template>
 
 <style scoped lang="scss">
+.productFilter {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 10px;
+
+  #product_symbol {
+    padding: 7px;
+    width: 250px;
+    border-color: var(--el-color-primary);
+    border-radius: 5px;
+  }
+
+  .m-2 {
+    width: 150px;
+  }
+}
 .red {
   color: red;
 }
@@ -264,7 +283,7 @@ function makeSearchFn() {
   border-radius: 15px;
 }
 .infinite-list {
-  height: 30vh;
+  height: 80vh;
   padding: 0;
   margin: 0;
   list-style: none;

@@ -2,9 +2,12 @@
 
 <template>
   <div class="header">
-    <el-link type="primary" @click="$router.push({ name: 'List' })"
-      >Stocks</el-link
-    >
+    <div class="wrapper">
+      <h4 class="siteName">𝓒𝓸𝓶𝓹𝓪𝓷𝔂 𝓼𝓱𝓪𝓻𝓮𝓼</h4>
+      <el-link type="primary" @click="$router.push({ name: 'List' })"
+        >Stocks</el-link
+      >
+    </div>
     <!-- <el-link type="success" @click="$router.push({ name: 'Product' })"
         >Товар</el-link
       > -->
@@ -20,6 +23,12 @@
   width: 100%;
   padding: 16px;
   border-bottom: 2px solid #409eff;
+
+  .wrapper {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
 }
 
 .el-link {

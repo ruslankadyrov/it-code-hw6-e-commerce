@@ -11,6 +11,6 @@ import Header from "./components/header.vue";
 
 <style scoped lang="scss">
 .app__main {
-  margin-top: 60px;
+  margin-top: 67px;
 }
 </style>

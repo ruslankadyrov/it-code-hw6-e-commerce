@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref, computed, watchEffect } from "vue";
 import { useDebounce } from "@vueuse/core";
 
 import type { Product } from "../types/products";
@@ -28,24 +28,30 @@ const valueFilter = ref("");
 const productSymbolWithoutSpace = computed(() => {
   return productSymbol.value.replace(/ /g, "");
 });
-const symbolDebounce = useDebounce(productSymbolWithoutSpace, 1000);
+const symbolDebounce = useDebounce(productSymbolWithoutSpace, 2000);
 
-function makeClickRequest() {
-  makeSearch.value = "true";
+watchEffect(() => {
+  makeClickRequest(symbolDebounce.value);
+});
+
+function makeClickRequest(ticker: string) {
   makeRequest({
     method: "get",
-    url: `https://financialmodelingprep.com/api/v3/profile/${symbolDebounce.value}?apikey=39c41689f9fab5f0dcf71b542172366c`,
+    url: `https://financialmodelingprep.com/api/v3/profile/${ticker}?apikey=39c41689f9fab5f0dcf71b542172366c`,
   }).then(({ data }) => {
     products.value = data;
   });
 }
 
 function resetFilter() {
-  makeSearch.value = "false";
   makeFilter.value = "false";
+  valueFilter.value = "";
+}
+
+function resetSearch() {
+  makeSearch.value = "false";
   productSymbol.value = "";
   products.value = [];
-  valueFilter.value = "";
 }
 
 //for infinite scroll
@@ -91,17 +97,28 @@ const filterItem = [
     },
   },
 ];
+
+function makeSearchFn() {
+  setTimeout(valueSearch, 3000);
+  function valueSearch() {
+    makeSearch.value = "true";
+    if (!symbolDebounce.value) {
+      makeSearch.value = "false";
+    }
+  }
+}
 </script>
 
 <template>
+  <!-- v-on:keyup.enter="makeClickRequest()" -->
   <input
     type="text"
     id="product_symbol"
     v-model="productSymbol"
-    v-on:keyup.enter="makeClickRequest()"
+    @input="makeSearchFn()"
   />
-  <el-button type="primary" plain @click="resetFilter()">
-    Reset filter
+  <el-button type="primary" plain @click="resetSearch()">
+    Reset search
   </el-button>
   <el-select v-model="valueFilter" class="m-2" placeholder="Choose country">
     <el-option
@@ -112,6 +129,9 @@ const filterItem = [
       @click="item.filtered"
     />
   </el-select>
+  <el-button type="primary" plain @click="resetFilter()">
+    Reset filter
+  </el-button>
 
   <h3>List of stocks</h3>
   <div v-if="makeSearch == 'false' && makeFilter == 'false'">

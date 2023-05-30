@@ -30,19 +30,6 @@ makeRequest({
   <el-button type="primary" plain @click="$router.push({ name: 'List' })">
     Back
   </el-button>
-
-  <!-- <h3>{{ (paramsId = $route.params.id) }}</h3>
-  <div v-for="product in products">
-    <div v-if="product.symbol === $route.params.id">
-      <span>{{ product.symbol }}</span>
-      <sup>{{ product.price }}$</sup>
-
-      <div>Описание:{{ product.description }}</div>
-    </div>
-  </div>
-  <el-button type="primary" plain @click="$router.push({ name: 'List' })"
-    >Назад</el-button
-  > -->
 </template>
 
 <style scoped lang="scss"></style>

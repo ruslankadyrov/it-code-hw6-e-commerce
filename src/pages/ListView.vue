@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed } from "vue";
 import { useDebounce } from "@vueuse/core";
 
 import type { Product } from "../types/products";
@@ -15,6 +15,7 @@ const productStore = useProductStore();
 productStore.fetchProducts();
 
 let makeSearch = ref("false");
+let makeFilter = ref("false");
 
 const valueFilter = ref("");
 
@@ -24,8 +25,10 @@ const valueFilter = ref("");
 // }).then(({ data }) => {
 //   products.value = data;
 // });
-
-const symbolDebounce = useDebounce(productSymbol, 1000);
+const productSymbolWithoutSpace = computed(() => {
+  return productSymbol.value.replace(/ /g, "");
+});
+const symbolDebounce = useDebounce(productSymbolWithoutSpace, 1000);
 
 function makeClickRequest() {
   makeSearch.value = "true";
@@ -39,6 +42,7 @@ function makeClickRequest() {
 
 function resetFilter() {
   makeSearch.value = "false";
+  makeFilter.value = "false";
   productSymbol.value = "";
   products.value = [];
   valueFilter.value = "";
@@ -50,47 +54,52 @@ const load = () => {
   count.value += 3;
 };
 
-const options = [
+const filterItem = [
   {
     value: "RU",
     label: "Russia",
     filtered: function () {
-      makeSearch.value = "filter";
+      makeFilter.value = "true";
     },
   },
   {
     value: "US",
     label: "United States",
     filtered: function () {
-      makeSearch.value = "filter";
+      makeFilter.value = "true";
     },
   },
   {
     value: "AU",
     label: "Australia",
     filtered: function () {
-      makeSearch.value = "filter";
+      makeFilter.value = "true";
     },
   },
   {
     value: "CA",
     label: "Canada",
     filtered: function () {
-      makeSearch.value = "filter";
+      makeFilter.value = "true";
     },
   },
   {
     value: "NZ",
     label: "New Zealand",
     filtered: function () {
-      makeSearch.value = "filter";
+      makeFilter.value = "true";
     },
   },
 ];
 </script>
 
 <template>
-  <input type="text" id="product_symbol" v-model="productSymbol" />
+  <input
+    type="text"
+    id="product_symbol"
+    v-model="productSymbol"
+    v-on:keyup.enter="makeClickRequest()"
+  />
   <el-button type="primary" plain @click="makeClickRequest()">
     Search
   </el-button>
@@ -100,7 +109,7 @@ const options = [
 
   <el-select v-model="valueFilter" class="m-2" placeholder="Choose country">
     <el-option
-      v-for="item in options"
+      v-for="item in filterItem"
       :key="item.value"
       :label="item.label"
       :value="item.value"
@@ -111,7 +120,7 @@ const options = [
   {{ valueFilter }}
 
   <h3>List of stocks</h3>
-  <div v-if="makeSearch == 'false'">
+  <div v-if="makeSearch == 'false' && makeFilter == 'false'">
     <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
       <li v-for="i in count" :key="i" class="infinite-list-item">
         <el-image
@@ -125,7 +134,7 @@ const options = [
     </ul>
   </div>
 
-  <div v-else-if="makeSearch == 'true'">
+  <div v-else-if="makeSearch == 'true' && makeFilter == 'false'">
     <el-scrollbar>
       <p
         v-for="product in products"
@@ -138,7 +147,7 @@ const options = [
     </el-scrollbar>
   </div>
 
-  <div v-else="makeSearch == 'filter'">
+  <div v-else-if="makeSearch == 'false' && makeFilter == 'true'">
     <div v-for="product in productStore.products">
       <div v-if="product.country == valueFilter">
         <el-scrollbar>
@@ -157,7 +166,26 @@ const options = [
       </div>
     </div>
   </div>
-  {{ makeSearch }}
+
+  <div v-else="makeSearch == 'true' && makeFilter == 'true'">
+    <div v-for="product in products">
+      <div v-if="product.country == valueFilter">
+        <el-scrollbar>
+          <p
+            class="scrollbar-demo-item"
+            @click="$router.push('/product/' + product.symbol)"
+          >
+            <el-image
+              style="width: 40px; height: 40px"
+              :src="product.image"
+              lazy
+            />
+            {{ product.companyName }}
+          </p>
+        </el-scrollbar>
+      </div>
+    </div>
+  </div>
 </template>
 
 <style scoped lang="scss">

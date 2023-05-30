@@ -100,13 +100,9 @@ const filterItem = [
     v-model="productSymbol"
     v-on:keyup.enter="makeClickRequest()"
   />
-  <el-button type="primary" plain @click="makeClickRequest()">
-    Search
-  </el-button>
   <el-button type="primary" plain @click="resetFilter()">
     Reset filter
   </el-button>
-
   <el-select v-model="valueFilter" class="m-2" placeholder="Choose country">
     <el-option
       v-for="item in filterItem"
@@ -131,8 +127,17 @@ const filterItem = [
           :src="productStore.products[i - 1].image"
           class="product-image"
         />
+        {{ productStore.products[i - 1].companyName }}
         {{ productStore.products[i - 1].symbol }}
-        {{ i }}
+        {{ productStore.products[i - 1].price }}$
+        <div
+          :class="{
+            red: productStore.products[i - 1].changes <= 0,
+            green: productStore.products[i - 1].changes > 0,
+          }"
+        >
+          {{ productStore.products[i - 1].changes }}$
+        </div>
       </li>
     </ul>
   </div>
@@ -198,6 +203,12 @@ const filterItem = [
 </template>
 
 <style scoped lang="scss">
+.red {
+  color: red;
+}
+.green {
+  color: rgb(18, 193, 18);
+}
 .product-image {
   filter: drop-shadow(1px 1px 1px black);
   border-radius: 15px;

@@ -21,7 +21,7 @@ makeRequest({
 </script>
 
 <template>
-  <h3>{{ (paramsId = $route.params.id) }}</h3>
+  <h3>{{ $route.params.id }}</h3>
   <div v-for="product in products">
     <span>{{ product.companyName }}</span>
     <sup>{{ product.price }}$</sup>

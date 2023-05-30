@@ -117,12 +117,15 @@ const filterItem = [
     />
   </el-select>
 
-  {{ valueFilter }}
-
   <h3>List of stocks</h3>
   <div v-if="makeSearch == 'false' && makeFilter == 'false'">
     <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
-      <li v-for="i in count" :key="i" class="infinite-list-item">
+      <li
+        v-for="i in count"
+        :key="i"
+        class="infinite-list-item"
+        @click="$router.push('/product/' + productStore.products[i - 1].symbol)"
+      >
         <el-image
           style="width: 40px; height: 40px"
           :src="productStore.products[i - 1].image"
@@ -141,7 +144,11 @@ const filterItem = [
         class="scrollbar-demo-item"
         @click="$router.push('/product/' + product.symbol)"
       >
-        <el-image style="width: 40px; height: 40px" :src="product.image" lazy />
+        <el-image
+          style="width: 40px; height: 40px"
+          :src="product.image"
+          class="product-image"
+        />
         {{ product.companyName }}
       </p>
     </el-scrollbar>
@@ -158,7 +165,7 @@ const filterItem = [
             <el-image
               style="width: 40px; height: 40px"
               :src="product.image"
-              lazy
+              class="product-image"
             />
             {{ product.companyName }}
           </p>
@@ -178,7 +185,7 @@ const filterItem = [
             <el-image
               style="width: 40px; height: 40px"
               :src="product.image"
-              lazy
+              class="product-image"
             />
             {{ product.companyName }}
           </p>
@@ -186,6 +193,8 @@ const filterItem = [
       </div>
     </div>
   </div>
+
+  <el-backtop :right="100" :bottom="100" />
 </template>
 
 <style scoped lang="scss">
@@ -198,16 +207,19 @@ const filterItem = [
   padding: 0;
   margin: 0;
   list-style: none;
+
+  .infinite-list-item {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 50px;
+    background: var(--el-color-primary-light-9);
+    margin: 10px;
+    color: var(--el-color-primary);
+  }
 }
-.infinite-list .infinite-list-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 50px;
-  background: var(--el-color-primary-light-9);
-  margin: 10px;
-  color: var(--el-color-primary);
-}
+
 .infinite-list .infinite-list-item + .list-item {
   margin-top: 10px;
 }

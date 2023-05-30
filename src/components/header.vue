@@ -7,10 +7,10 @@
       <el-link type="primary" @click="$router.push({ name: 'List' })"
         >Stocks</el-link
       >
+      <el-link type="primary" @click="$router.push({ name: 'SplitCalendar' })"
+        >Split Calendar</el-link
+      >
     </div>
-    <!-- <el-link type="success" @click="$router.push({ name: 'Product' })"
-        >Товар</el-link
-      > -->
   </div>
 </template>
 
@@ -33,6 +33,5 @@
 
 .el-link {
   font-size: 20px;
-  margin-right: 20px;
 }
 </style>

@@ -3,7 +3,7 @@
 <template>
   <div class="header">
     <el-link type="primary" @click="$router.push({ name: 'List' })"
-      >Главная</el-link
+      >Stocks</el-link
     >
     <!-- <el-link type="success" @click="$router.push({ name: 'Product' })"
         >Товар</el-link

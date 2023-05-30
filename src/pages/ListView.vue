@@ -175,6 +175,16 @@ function makeSearchFn() {
           class="product-image"
         />
         {{ product.companyName }}
+        {{ product.symbol }}
+        {{ product.price }}
+        <div
+          :class="{
+            red: product.changes <= 0,
+            green: product.changes > 0,
+          }"
+        >
+          {{ product.changes }}$
+        </div>
       </p>
     </el-scrollbar>
   </div>
@@ -193,6 +203,16 @@ function makeSearchFn() {
               class="product-image"
             />
             {{ product.companyName }}
+            {{ product.symbol }}
+            {{ product.price }}
+            <div
+              :class="{
+                red: product.changes <= 0,
+                green: product.changes > 0,
+              }"
+            >
+              {{ product.changes }}$
+            </div>
           </p>
         </el-scrollbar>
       </div>

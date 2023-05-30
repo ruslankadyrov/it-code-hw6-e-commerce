@@ -135,7 +135,6 @@ function makeSearchFn() {
     </el-button>
   </div>
 
-  <!-- <h2>List of shares</h2> -->
   <div v-if="makeSearch == 'false' && makeFilter == 'false'">
     <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
       <li
@@ -149,16 +148,21 @@ function makeSearchFn() {
           :src="productStore.products[i - 1].image"
           class="product-image"
         />
-        {{ productStore.products[i - 1].companyName }}
-        {{ productStore.products[i - 1].symbol }}
-        {{ productStore.products[i - 1].price }}$
+        <div class="productName">
+          {{ productStore.products[i - 1].companyName }}
+          ({{ productStore.products[i - 1].symbol }})
+        </div>
         <div
+          id="changes"
           :class="{
             red: productStore.products[i - 1].changes <= 0,
             green: productStore.products[i - 1].changes > 0,
           }"
         >
-          {{ productStore.products[i - 1].changes }}$
+          Changes: {{ productStore.products[i - 1].changes }}$
+        </div>
+        <div class="productCost">
+          Price: {{ productStore.products[i - 1].price }}$
         </div>
       </li>
     </ul>
@@ -171,22 +175,25 @@ function makeSearchFn() {
         class="scrollbar-demo-item"
         @click="$router.push('/product/' + product.symbol)"
       >
-        <el-image
-          style="width: 40px; height: 40px"
-          :src="product.image"
-          class="product-image"
-        />
+      <el-image
+        style="width: 40px; height: 40px"
+        :src="product.image"
+        class="product-image"
+      />
+      <div class="productName">
         {{ product.companyName }}
-        {{ product.symbol }}
-        {{ product.price }}$
-        <div
-          :class="{
-            red: product.changes <= 0,
-            green: product.changes > 0,
-          }"
-        >
-          {{ product.changes }}$
-        </div>
+        ({{ product.symbol }})
+      </div>
+      <div
+        id="changes"
+        :class="{
+          red: product.changes <= 0,
+          green: product.changes > 0,
+        }"
+      >
+        Changes: {{ product.changes }}$
+      </div>
+      <div class="productCost">Price: {{ product.price }}$</div>
       </p>
     </el-scrollbar>
   </div>
@@ -199,22 +206,25 @@ function makeSearchFn() {
             class="scrollbar-demo-item"
             @click="$router.push('/product/' + product.symbol)"
           >
-            <el-image
-              style="width: 40px; height: 40px"
-              :src="product.image"
-              class="product-image"
-            />
+          <el-image
+            style="width: 40px; height: 40px"
+            :src="product.image"
+            class="product-image"
+          />
+          <div class="productName">
             {{ product.companyName }}
-            {{ product.symbol }}
-            {{ product.price }}$
-            <div
-              :class="{
-                red: product.changes <= 0,
-                green: product.changes > 0,
-              }"
-            >
-              {{ product.changes }}$
-            </div>
+            ({{ product.symbol }})
+          </div>
+          <div
+            id="changes"
+            :class="{
+              red: product.changes <= 0,
+              green: product.changes > 0,
+            }"
+          >
+            Changes: {{ product.changes }}$
+          </div>
+          <div class="productCost">Price: {{ product.price }}$</div>
           </p>
         </el-scrollbar>
       </div>
@@ -229,22 +239,25 @@ function makeSearchFn() {
             class="scrollbar-demo-item"
             @click="$router.push('/product/' + product.symbol)"
           >
-            <el-image
-              style="width: 40px; height: 40px"
-              :src="product.image"
-              class="product-image"
-            />
+          <el-image
+            style="width: 40px; height: 40px"
+            :src="product.image"
+            class="product-image"
+          />
+          <div class="productName">
             {{ product.companyName }}
-            {{ product.symbol }}
-            {{ product.price }}$
-            <div
-              :class="{
-                red: product.changes <= 0,
-                green: product.changes > 0,
-              }"
-            >
-              {{ product.changes }}$
-            </div>
+            ({{ product.symbol }})
+          </div>
+          <div
+            id="changes"
+            :class="{
+              red: product.changes <= 0,
+              green: product.changes > 0,
+            }"
+          >
+            Changes: {{ product.changes }}$
+          </div>
+          <div class="productCost">Price: {{ product.price }}$</div>
           </p>
         </el-scrollbar>
       </div>
@@ -281,9 +294,10 @@ function makeSearchFn() {
 .product-image {
   filter: drop-shadow(1px 1px 1px black);
   border-radius: 15px;
+  margin-left: 60px;
 }
 .infinite-list {
-  height: 80vh;
+  height: 70vh;
   padding: 0;
   margin: 0;
   list-style: none;
@@ -297,6 +311,18 @@ function makeSearchFn() {
     background: var(--el-color-primary-light-9);
     margin: 10px;
     color: var(--el-color-primary);
+    gap: 20px;
+
+    #changes {
+      flex-basis: 150px;
+    }
+    .productName {
+      flex-basis: 350px;
+    }
+    .productCost {
+      color: #000;
+      flex-basis: 150px;
+    }
   }
 }
 
@@ -311,9 +337,20 @@ function makeSearchFn() {
   justify-content: center;
   height: 50px;
   margin: 5px;
-  text-align: center;
   border-radius: 4px;
   background: var(--el-color-primary-light-9);
   color: var(--el-color-primary);
+  gap: 20px;
+
+  #changes {
+    flex-basis: 150px;
+  }
+  .productName {
+    flex-basis: 350px;
+  }
+  .productCost {
+    color: #000;
+    flex-basis: 150px;
+  }
 }
 </style>

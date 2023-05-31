@@ -3,12 +3,14 @@ import { ref, computed, watchEffect } from "vue";
 import { useDebounce } from "@vueuse/core";
 
 import type { Product } from "../types/products";
+import type { Countries } from "../types/countries";
 
 import makeRequest from "../services/api/httpClient";
 
 import { useProductStore } from "@/store/product-store";
 
 const products = ref<Product[]>([]);
+const countries = ref<Countries[]>([]);
 const productSymbol = ref("");
 
 const productStore = useProductStore();
@@ -43,6 +45,15 @@ function makeClickRequest(ticker: string) {
   });
 }
 
+
+makeRequest({
+  method: "get",
+  url: "https://financialmodelingprep.com/api/v3/get-all-countries?apikey=39c41689f9fab5f0dcf71b542172366c",
+}).then(({ data }) => {
+  countries.value = data;
+});
+
+
 function resetFilter() {
   makeFilter.value = "false";
   valueFilter.value = "";
@@ -60,43 +71,43 @@ const load = () => {
   count.value += 3;
 };
 
-const filterItem = [
-  {
-    value: "RU",
-    label: "Russia",
-    filtered: function () {
-      makeFilter.value = "true";
-    },
-  },
-  {
-    value: "US",
-    label: "United States",
-    filtered: function () {
-      makeFilter.value = "true";
-    },
-  },
-  {
-    value: "AU",
-    label: "Australia",
-    filtered: function () {
-      makeFilter.value = "true";
-    },
-  },
-  {
-    value: "CA",
-    label: "Canada",
-    filtered: function () {
-      makeFilter.value = "true";
-    },
-  },
-  {
-    value: "NZ",
-    label: "New Zealand",
-    filtered: function () {
-      makeFilter.value = "true";
-    },
-  },
-];
+// let filterItem = [
+//   {
+//     value: "RU",
+//     label: "Russia",
+//     filtered: function () {
+//       makeFilter.value = "true";
+//     },
+//   },
+//   {
+//     value: "US",
+//     label: "United States",
+//     filtered: function () {
+//       makeFilter.value = "true";
+//     },
+//   },
+//   {
+//     value: "AU",
+//     label: "Australia",
+//     filtered: function () {
+//       makeFilter.value = "true";
+//     },
+//   },
+//   {
+//     value: "CA",
+//     label: "Canada",
+//     filtered: function () {
+//       makeFilter.value = "true";
+//     },
+//   },
+//   {
+//     value: "NZ",
+//     label: "New Zealand",
+//     filtered: function () {
+//       makeFilter.value = "true";
+//     },
+//   },
+// ];
 
 function makeSearchFn() {
   setTimeout(valueSearch, 3000);
@@ -107,6 +118,11 @@ function makeSearchFn() {
     }
   }
 }
+
+function makeClickFilter() {
+  makeFilter.value = "true"
+}
+
 </script>
 
 <template>
@@ -123,11 +139,11 @@ function makeSearchFn() {
     </el-button>
     <el-select v-model="valueFilter" class="m-2" placeholder="Choose country">
       <el-option
-        v-for="item in filterItem"
-        :key="item.value"
-        :label="item.label"
-        :value="item.value"
-        @click="item.filtered"
+        v-for="item in countries"
+        :key="item"
+        :label="item"
+        :value="item"
+        @click="makeClickFilter"
       />
     </el-select>
     <el-button type="primary" plain @click="resetFilter()">

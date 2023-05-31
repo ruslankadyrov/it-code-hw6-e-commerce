@@ -10,6 +10,9 @@
       <el-link type="primary" @click="$router.push({ name: 'SplitCalendar' })"
         >Split Calendar</el-link
       >
+      <el-link type="primary" @click="$router.push({ name: 'About' })"
+        >About</el-link
+      >
     </div>
   </div>
 </template>
@@ -29,9 +32,9 @@
     align-items: center;
     gap: 20px;
   }
-}
 
-.el-link {
-  font-size: 20px;
+  .el-link {
+    font-size: 20px;
+  }
 }
 </style>
